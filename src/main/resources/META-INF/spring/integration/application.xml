@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:file="http://www.springframework.org/schema/integration/file"
+       xmlns:feed="http://www.springframework.org/schema/integration/feed"
+       xmlns:jms="http://www.springframework.org/schema/integration/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/integration
+                           http://www.springframework.org/schema/integration/spring-integration.xsd">
+
+    <bean id="inboundJndiTemplate" class="org.springframework.jndi.JndiTemplate">
+        <property name="environment">
+            <props>
+                <prop key="java.naming.factory.initial">${inbound.java.naming.factory.initial}</prop>
+                <prop key="java.naming.provider.url">${inbound.java.naming.provider.url}</prop>
+                <prop key="java.naming.security.principal">${inbound.java.naming.security.principal}</prop>
+                <prop key="java.naming.security.credentials">${inbound.java.naming.security.credentials}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="outboundJndiTemplate" class="org.springframework.jndi.JndiTemplate">
+        <property name="environment">
+            <props>
+                <prop key="java.naming.factory.initial">${outbound.java.naming.factory.initial}</prop>
+                <prop key="java.naming.provider.url">${outbound.java.naming.provider.url}</prop>
+                <prop key="java.naming.security.principal">${outbound.java.naming.security.principal}</prop>
+                <prop key="java.naming.security.credentials">${outbound.java.naming.security.credentials}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="inboundTransactionManager" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiTemplate" ref="inboundJndiTemplate"/>
+        <property name="jndiName" value="javax.transaction.TransactionManager"/>
+    </bean>
+
+    <bean id="inboundUserTransaction" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiTemplate" ref="inboundJndiTemplate"/>
+        <property name="jndiName" value="javax.transaction.UserTransaction"/>
+    </bean>
+
+    <bean id="inboundJtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="jndiTemplate" ref="inboundJndiTemplate"/>
+        <property name="transactionManager"> 
+            <ref bean="inboundTransactionManager"/>
+        </property>
+        <property name="userTransaction"> 
+            <ref bean="inboundUserTransaction" />
+        </property>
+    </bean>
+    
+        <!--    <bean id="dataSource" class="oracle.jdbc.pool.OracleDataSource" destroy-method="close">
+        <property name="connectionCachingEnabled" value="true" />
+        <property name="URL" value="jdbc:oracle:thin:@//localhost:1521/XE" />
+        <property name="password" value="integration" />
+        <property name="user"     value="integration" />
+        <property name="connectionCacheProperties">
+            <props merge="default">
+                <prop key="MinLimit">3</prop>
+                <prop key="MaxLimit">20</prop>
+            </props>
+        </property>
+    </bean>-->
+
+    <bean id="jmsDestinationResolver" class="org.springframework.jms.support.destination.JndiDestinationResolver">
+        <property name="jndiTemplate" ref="inboundJndiTemplate" />
+        <property name="cache" value="true" />
+    </bean>
+    
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="inboundConnectionFactory" />
+        <property name="destinationResolver" ref="jmsDestinationResolver" />
+        <property name="sessionTransacted" value="true"/>
+        <!--        <property name="messageConverter" ref="oxmMessageConverter" />-->
+    </bean>
+
+    <!--    <bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPaths">
+            <list>
+                <value>com.unifirst.integration.order.jms.pojo</value>
+            </list>
+        </property>
+        <property name="marshallerProperties">
+            <map>
+                <entry key="com.sun.xml.bind.namespacePrefixMapper">
+                    <bean id="NamespacePrefixMapperImpl" class="com.unifirst.integration.order.jms.UNFNamespaceMapper" />
+                </entry>
+            </map>
+        </property>
+    </bean>-->
+
+    <!--    <bean id="oxmMessageConverter" class="org.springframework.jms.support.converter.MarshallingMessageConverter">
+        <property name="marshaller" ref="marshaller" />
+        <property name="unmarshaller" ref="marshaller" />
+        <property name="targetType" value="TEXT" />
+    </bean>-->
+
+    <!--<integration:poller id="poller" default="true" fixed-delay="1000"/>-->
+
+    <import resource="classpath*:META-INF/spring/integration/inbound.xml"/>
+    <import resource="classpath*:META-INF/spring/integration/flow.xml"/>
+    <import resource="classpath*:META-INF/spring/integration/outbound.xml"/>
+
+    <context:component-scan base-package="spring.integration.jms"/>
+
+</beans>

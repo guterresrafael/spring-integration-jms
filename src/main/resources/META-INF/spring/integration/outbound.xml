@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:jms="http://www.springframework.org/schema/integration/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/integration
+                           http://www.springframework.org/schema/integration/spring-integration.xsd
+                           http://www.springframework.org/schema/integration/jms
+                           http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd">
+
+    <bean id="outboundConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiTemplate" ref="outboundJndiTemplate" />
+        <property name="jndiName" value="${outbound.jmsConnectionFactory}" />
+    </bean>
+
+    <bean id="outboundXAConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiTemplate" ref="outboundJndiTemplate" />
+        <property name="jndiName" value="${outbound.jmsXAConnectionFactory}" />
+    </bean>
+
+    <bean id="outboundQueue" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiTemplate" ref="outboundJndiTemplate" />
+        <property name="jndiName" value="${outbound.jmsQueue}" />
+    </bean>
+
+    <int:channel id="outboundChannel" />
+    <jms:outbound-channel-adapter id="outboundChannelAdapter"
+                                  connection-factory="outboundConnectionFactory"
+                                  destination="outboundQueue"
+                                  channel="outboundChannel"
+                                  session-transacted="true">
+    </jms:outbound-channel-adapter>
+
+</beans>
