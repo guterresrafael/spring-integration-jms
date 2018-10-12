@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 
 /**
  *
- * @author guter
+ * @author rafael.guterres
  */
 @SpringBootApplication
 @PropertySource("classpath:META-INF/spring/integration/application.properties")
