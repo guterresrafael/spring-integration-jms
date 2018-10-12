@@ -104,7 +104,7 @@
     <!--<integration:poller id="poller" default="true" fixed-delay="1000"/>-->
 
     <import resource="classpath*:META-INF/spring/integration/inbound.xml"/>
-    <import resource="classpath*:META-INF/spring/integration/flow.xml"/>
+    <import resource="classpath*:META-INF/spring/integration/integrationFlow.xml"/>
     <import resource="classpath*:META-INF/spring/integration/outbound.xml"/>
 
     <context:component-scan base-package="spring.integration.jms"/>
