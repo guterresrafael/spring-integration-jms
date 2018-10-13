@@ -23,14 +23,14 @@
         <property name="jndiName" value="${inbound.jmsXAConnectionFactory}" />
     </bean>
 
-    <bean id="inboundQueue" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <bean id="inboundDestination" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiTemplate" ref="inboundJndiTemplate" />
-        <property name="jndiName" value="${inbound.jmsQueue}" />
+        <property name="jndiName" value="${inbound.jmsDestination}" />
     </bean>
 
     <!--    <jms:inbound-channel-adapter id="inboundChannelAdapter"
                                  connection-factory="inboundConnectionFactory"
-                                 destination="inboundQueue"
+                                 destination="inboundDestination"
                                  acknowledge="transacted"
                                  session-transacted="true"
                                  channel="inboundChannel">
@@ -39,7 +39,7 @@
     
     <jms:message-driven-channel-adapter id="inboundChannelAdapter"
                                         connection-factory="inboundConnectionFactory"
-                                        destination="inboundQueue"
+                                        destination="inboundDestination"
                                         acknowledge="transacted"
                                         transaction-manager="inboundJtaTransactionManager"
                                         concurrent-consumers="1"

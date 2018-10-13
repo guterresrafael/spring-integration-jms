@@ -20,15 +20,15 @@
         <property name="jndiName" value="${outbound.jmsXAConnectionFactory}" />
     </bean>
 
-    <bean id="outboundQueue" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <bean id="outboundDestination" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiTemplate" ref="outboundJndiTemplate" />
-        <property name="jndiName" value="${outbound.jmsQueue}" />
+        <property name="jndiName" value="${outbound.jmsDestination}" />
     </bean>
 
     <int:channel id="outboundChannel" />
     <jms:outbound-channel-adapter id="outboundChannelAdapter"
                                   connection-factory="outboundConnectionFactory"
-                                  destination="outboundQueue"
+                                  destination="outboundDestination"
                                   channel="outboundChannel"
                                   session-transacted="true">
     </jms:outbound-channel-adapter>
