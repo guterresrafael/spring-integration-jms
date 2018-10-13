@@ -45,16 +45,12 @@
         <property name="jndiName" value="javax.transaction.UserTransaction"/>
     </bean>
 
-    <bean id="inboundJtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
         <property name="jndiTemplate" ref="inboundJndiTemplate"/>
-        <property name="transactionManager"> 
-            <ref bean="inboundTransactionManager"/>
-        </property>
-        <property name="userTransaction"> 
-            <ref bean="inboundUserTransaction" />
-        </property>
+        <property name="transactionManager" ref="inboundTransactionManager"/>
+        <property name="userTransaction" ref="inboundUserTransaction"/>
     </bean>
-    
+
         <!--    <bean id="dataSource" class="oracle.jdbc.pool.OracleDataSource" destroy-method="close">
         <property name="connectionCachingEnabled" value="true" />
         <property name="URL" value="jdbc:oracle:thin:@//localhost:1521/XE" />

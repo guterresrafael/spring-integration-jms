@@ -21,8 +21,9 @@
 
     <int:chain input-channel="inboundChannel" output-channel="outboundChannel">
 
-        <int:delayer id="delayer"
-                     default-delay="30000" />
+        <int:transformer expression="payload.toUpperCase()"/>
+
+        <int:service-activator ref="sleepThread" method="waiting"/>
 
     </int:chain>
 

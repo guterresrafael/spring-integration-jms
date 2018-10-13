@@ -30,7 +30,6 @@
                                   connection-factory="outboundConnectionFactory"
                                   destination="outboundDestination"
                                   channel="outboundChannel"
-                                  session-transacted="true">
-    </jms:outbound-channel-adapter>
+                                  session-transacted="true" />
 
 </beans>

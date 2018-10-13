@@ -35,18 +35,18 @@
                                  session-transacted="true"
                                  channel="inboundChannel">
         <int:poller fixed-rate="10000"/>
+        
     </jms:inbound-channel-adapter>-->
     
     <jms:message-driven-channel-adapter id="inboundChannelAdapter"
                                         connection-factory="inboundConnectionFactory"
                                         destination="inboundDestination"
                                         acknowledge="transacted"
-                                        transaction-manager="inboundJtaTransactionManager"
+                                        transaction-manager="transactionManager"
                                         concurrent-consumers="1"
                                         max-concurrent-consumers="1"
                                         max-messages-per-task="1"
                                         channel="inboundChannel" />
-
     <int:channel id="inboundChannel" />
 
 </beans>
